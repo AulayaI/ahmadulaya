@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Moodle </title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>TUTORIAL INSTALL MOODLE 5.0 100% WORK</h1>
+            <p class="subtitle">(cocok untuk pemula)</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="sect-mikrotik collapsible">
+            <div class="section-header">
+                <h2>1. KONFIGURASI MIKROTIK (CHR)</h2>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <img src="./image/topologi.jpg" alt="Topologi Jaringan Mikrotik" class="gambar-tutorial">
+            <ol>
+                <li>Tambahkan Network Device <b>int_br0</b> dan <b>int_br1</b> di Proxmox.</li>
+                <li>Cek IP: <span class="cmd-inline">/ip address print</span></li>
+                <li>Akses Winbox, buat <b>Bridge1</b>, masukkan port <b>eth2</b> & <b>eth3</b>.</li>
+                <li>Setting IP Gateway (Bridge1):
+                    <div class="cmd-stack">
+                        <div class="cmd-line">IP Address: 10.12.X.1</div>
+                        <div class="cmd-line">Interface: bridge1</div>
+                    </div>
+                </li>
+                <li>Firewall NAT:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">Chain: srcnat</div>
+                        <div class="cmd-line">Action: Masquerade</div>
+                    </div>
+                </li>
+                <li>DST-NAT (Port Forwarding):
+                    <div class="cmd-stack">
+                        <div class="cmd-line">Chain: dstnat</div>
+                        <div class="cmd-line">In. Interface: eth1</div>
+                        <div class="cmd-line">Action: dst-nat | To Address: 10.12.X.2 (ip web server)</div>
+                    </div>
+                </li>
+                <li>Jangan  lupa setting static masing masing CT:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">CT WEB SERVER : 10.12.X.2/24</div>
+                        <div class="cmd-line">CT DATABASE : 10.12.X.3/24</div>
+                        <div class="cmd-line">Cek IP dan koneksi internet</div>
+                    </div>
+                </li>
+            </ol>
+            </div>
+        </section>
+
+        <section class="sect-web collapsible">
+            <div class="section-header">
+                <h2>2. INSTALASI WEB SERVER</h2>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <ol>
+                <li>Edit Nginx Default: <span class="cmd-inline">nano /etc/nginx/sites-available/default</span></li>
+                 <div class="cmd-stack">
+                        <div class="cmd-line">Tambahkan index.php <br>Edit fastcgi php7.4-fpm > php8.4-fpm <br>Hapus # pada beberapa baris berikut: <br>location // include // fastcgi // kurung "}"</div>
+                    </div>
+                <li>Restart Service:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">systemctl restart nginx</div>
+                        <div class="cmd-line">systemctl status nginx</div>
+                        <div class="cmd-line">systemctl status php8.4-fpm</div>
+                    </div>
+                </li>
+                <li>Cek Koneksi Database:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">mysql -u username -h IP_DB_SERVER -P 3306 -p</div>
+                    </div>
+                </li>
+                <li>Buat file test PHP: <span class="cmd-inline">nano /var/www/html/test.db</span>
+                    <pre class="script-block">&lt;?php
+                    $host     = 'IP_DB';      // Ganti dengan IP server DB
+                    $port     = '3306';
+                    $dbname   = 'nama_db';
+                    $username = 'username_db';
+                    $password = 'pw_db';
+
+                    try {
+                        $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+                        
+                        $pdo = new PDO($dsn, $username, $password, [
+                            PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION,
+                            PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC
+                        ]);
+                        
+                        echo "&lt;h2 style='color:green;'&gt;✅ Koneksi Database SUKSES!&lt;/h2&gt;";
+                        echo "&lt;p&gt;Server: " . $pdo-&gt;getAttribute(PDO::ATTR_SERVER_INFO) . "&lt;/p&gt;";
+                        echo "&lt;p&gt;Client: " . $pdo-&gt;getAttribute(PDO::ATTR_CLIENT_VERSION) . "&lt;/p&gt;";
+                        
+                        // Test query sederhana
+                        $stmt = $pdo-&gt;query("SELECT VERSION() as version");
+                        $row  = $stmt-&gt;fetch();
+                        
+                        echo "&lt;p&gt;MariaDB Version: " . $row['version'] . "&lt;/p&gt;";
+
+                    } catch (PDOException $e) {
+                        echo "&lt;h2 style='color:red;'&gt;❌ Koneksi GAGAL!&lt;/h2&gt;";
+                        echo "&lt;p&gt;Error: " . $e-&gt;getMessage() . "&lt;/p&gt;";
+                        echo "&lt;p&gt;Host: $host:$port | DB: $dbname&lt;/p&gt;";
+                    }
+
+                    $pdo = null; // Tutup koneksi
+                    ?&gt;</pre>
+                </li>
+                <li>Cek status nginx dengan IP Mikrotik masing masing:<span class="cmd-inline">172.20.2.X</span>
+            </ol>
+            </div>
+        </section>
+
+        <section class="sect-db collapsible">
+            <div class="section-header">
+                <h2>3. INSTALASI DATABASE</h2>
+                <span class="arrow-icon">▼</span>
+            </div>
+
+            <div class="section-content">
+                <ol>
+                <li>Edit Config: <span class="cmd-inline">nano /etc/mysql/mariadb.conf.d/50-server.cnf</span>
+                    <div class="cmd-stack">
+                        <div class="cmd-line">bind-address = 0.0.0.0</div>
+                    </div>
+                </li>
+                <li>Login ke mysql: <span class="cmd-inline">mysql -u root -p</span>
+                <li>Query Database:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">CREATE DATABASE database_name;</div>
+                        <div class="cmd-line">CREATE USER 'username'@'%' IDENTIFIED BY 'password';</div>
+                        <div class="cmd-line">GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'%';</div>
+                        <div class="cmd-line">FLUSH PRIVILEGES;</div>
+                        <div class="cmd-line">EXIT;</div>
+                    </div>
+                </li>
+                <li>Restart: <span class="cmd-inline">systemctl restart mariadb</span></li>
+            </ol>
+            </div>
+        </section>
+
+        <section class="sect-moodle collapsible">
+            <div class="section-header">
+                <h2>4. INSTALASI MOODLE</h2>
+                <span class="arrow-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <h3>A. Buat database baru (VM CT DATABASE)</h3>
+            <ol>
+                    <li>Login ke mysql: <span class="cmd-inline">mysql -u root -p</span></li>
+                    <li>Query Database:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">CREATE DATABASE moodle DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</div>
+                        <div class="cmd-line">CREATE USER 'moodleuser'@'%' IDENTIFIED BY 'password';</div>
+                        <div class="cmd-line">GRANT ALL PRIVILEGES ON moodle.* TO 'moodleuser'@'%';</div>
+                        <div class="cmd-line">FLUSH PRIVILEGES;</div>
+                        <div class="cmd-line">EXIT;</div>
+                    </div>
+                </li>
+            </ol>
+
+            <h3>B. Konfigurasi PHP (VM CT WEB SERVER)</h3>
+            <ol>
+                <li>Edit: <span class="cmd-inline">nano /etc/php/8.4/fpm/php.ini</span></li>
+                <li>Ubah nilai berikut:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">max_input_vars = 5000</div>
+                        <div class="cmd-line">memory_limit = 256M</div>
+                        <div class="cmd-line">post_max_size = 100M</div>
+                        <div class="cmd-line">upload_max_filesize = 100M</div>
+                    </div>
+                </li>
+                <li>Restart: <span class="cmd-inline">systemctl restart php8.4-fpm</span></li>
+            </ol>
+
+            <h3>C. Download & Permission</h3>
+            <ol>
+                <li>Download Moodle:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">cd /var/www/html/</div>
+                        <div class="cmd-line">wget http://192.168.0.254/moodle-5.0.tgz</div>
+                        <div class="cmd-line">tar -zxvf moodle-5.0.tgz</div>
+                    </div>
+                </li>
+                <li>Hak Akses Folder:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">mkdir /var/moodledata</div>
+                        <div class="cmd-line">chown -R www-data:www-data /var/www/html/moodle</div>
+                        <div class="cmd-line">chown -R www-data:www-data /var/moodledata</div>
+                        <div class="cmd-line">chmod -R 755 /var/moodledata</div>
+                    </div>
+                </li>
+            </ol>
+
+            <h3>D. Konfigurasi Nginx (Moodle)</h3>
+            <p>Buat file: <span class="cmd-inline">nano /etc/nginx/sites-available/moodle</span></p>
+            <p>Isi dengan script berikut (1 Block Utuh):</p>
+            
+            <pre class="script-block">server {
+                listen 80 default_server;
+                server_name your_domain_or_ip;
+                root /var/www/html/moodle;
+                index index.php;
+                client_max_body_size 100M;
+
+                location / {
+                    try_files $uri $uri/ =404;
+                }
+
+                location ~ [^/]\.php(/|$) {
+                    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                    fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+                    fastcgi_index index.php;
+                    include fastcgi_params;
+                    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                    fastcgi_param PATH_INFO $fastcgi_path_info;
+                }
+
+                location /dataroot/ {
+                    internal;
+                    alias /var/moodledata/;
+                }
+            }</pre>
+
+            <h3>D. Finishing</h3>
+            <ol>
+                <!-- <li>Edit Config: <span class="cmd-inline">nano /var/www/html/moodle/config.php</span>
+                    <br>Ganti: <b>mysqli</b> menjadi <b>mariadb</b>.
+                </li> -->
+                <li>Aktifkan Site:
+                    <div class="cmd-stack">
+                        <div class="cmd-line">ln -s /etc/nginx/sites-available/moodle /etc/nginx/sites-enabled/</div>
+                        <div class="cmd-line">rm /etc/nginx/sites-enabled/default</div>
+                        <div class="cmd-line">nginx -t</div>
+                        <div class="cmd-line">systemctl restart nginx</div>
+                    </div>
+                </li>
+                <li>Buka browser, ketik IP, dan selesaikan instalasi.</li>
+            </ol>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        &copy; 2026 Copyright by AhmadUlayaIbrahim
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

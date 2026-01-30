@@ -1,0 +1,319 @@
+/* --- 1. SETTING DASAR & VARIABEL --- */
+:root {
+    --bg-body: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    
+    /* Warna Pastel Section */
+    --bg-mikrotik: #f0f9ff;
+    --bg-web: #f0fdf4;
+    --bg-db: #fff1f2;
+    --bg-moodle: #faf5ff;
+    
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-code: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding-bottom: 80px;
+    -webkit-font-smoothing: antialiased; /* Agar font lebih tajam di Mac/iOS */
+}
+
+/* --- 2. CONTAINER UTAMA --- */
+.container {
+    width: 100%;
+    max-width: 800px; /* Lebar maksimal di desktop */
+    margin: 0 auto;
+    padding: 0 24px; /* Jarak aman kiri-kanan default */
+}
+
+/* --- 3. HEADER --- */
+header {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 1px solid #f3f4f6;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* --- 4. SECTION & TYPOGRAPHY --- */
+section {
+    padding: 40px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    /* Agar border halus & menyatu */
+    border: 1px solid rgba(0,0,0,0.03); 
+}
+
+/* Pewarnaan Section */
+.sect-mikrotik { background-color: var(--bg-mikrotik); }
+.sect-web { background-color: var(--bg-web); }
+.sect-db { background-color: var(--bg-db); }
+.sect-moodle { background-color: var(--bg-moodle); }
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+    display: inline-block;
+    color: #374151;
+}
+
+h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #4b5563;
+}
+
+ol { 
+    margin-left: 20px; 
+    padding-left: 10px;
+}
+
+li { 
+    margin-bottom: 15px; 
+}
+
+/* --- 5. GAYA CODING (PENTING) --- */
+
+/* Inline Code (seperti: nano /etc/...) */
+.cmd-inline {
+    font-family: var(--font-code);
+    font-weight: 600;
+    font-size: 0.85em; /* Sedikit lebih kecil agar rapi */
+    color: #d946ef;
+    background: rgba(255,255,255,0.8);
+    padding: 2px 6px;
+    border-radius: 4px;
+    word-wrap: break-word; /* Agar tidak bablas jika link panjang */
+}
+
+/* Stack Code (Baris-baris perintah) */
+.cmd-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.cmd-line {
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border-left: 4px solid #cbd5e1;
+    color: #374151;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    
+    /* Agar teks panjang di HP turun ke bawah, bukan melebar */
+    white-space: pre-wrap; 
+    word-break: break-word;
+}
+
+/* Script Block (Kotak Coding Besar) */
+.script-block {
+    display: block;
+    font-family: var(--font-code);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    background-color: #ffffff;
+    color: #1f2937;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-left: 5px solid #8b5cf6;
+    margin: 15px 0;
+    
+    /* Logic Scroll Horizontal */
+    white-space: pre;     /* Pertahankan format spasi */
+    overflow-x: auto;     /* Munculkan scrollbar jika layar sempit */
+    -webkit-overflow-scrolling: touch; /* Scroll smooth di iPhone */
+    
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+/* --- 6. GAMBAR --- */
+/* Menghandle gambar placeholder maupun gambar asli <img> */
+.image-placeholder, img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+/* Khusus gaya placeholder text */
+.image-placeholder {
+    height: 180px;
+    background-color: rgba(255,255,255,0.4);
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Khusus gambar asli (jika pakai tag <img>) */
+img {
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* --- 7. FOOTER --- */
+footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+/* =========================================
+   8. MEDIA QUERIES (RESPONSIVE RULES)
+   ========================================= */
+
+/* Untuk Tablet (Lebar max 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px; /* Kurangi padding container */
+    }
+
+    header {
+        padding: 40px 0 30px;
+    }
+
+    h1 {
+        font-size: 1.8rem; /* Judul lebih kecil */
+    }
+
+    section {
+        padding: 30px 20px; /* Padding dalam kotak diperkecil */
+    }
+}
+
+/* Untuk HP / Mobile (Lebar max 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px; /* Padding lebih tipis lagi agar luas */
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Judul pas di layar HP */
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+
+    section {
+        padding: 25px 15px; /* Maksimalkan ruang konten */
+        margin-bottom: 25px;
+    }
+
+    ol {
+        margin-left: 15px; /* Geser list angka ke kiri */
+    }
+
+    /* Kecilkan font coding di HP agar muat lebih banyak */
+    .cmd-line, .script-block, .cmd-inline {
+        font-size: 0.8rem; 
+    }
+    
+    .script-block {
+        padding: 15px; /* Kurangi padding dalam kotak kode */
+    }
+}
+
+/* =========================================
+   9. TAMBAHAN BARU: STYLE UNTUK COLLAPSIBLE
+   ========================================= */
+
+/* Membuat header bisa diklik */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+}
+
+/* Menghilangkan margin default H2 agar sejajar dengan panah */
+.section-header h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+/* Style untuk icon panah */
+.arrow-icon {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Logika menyembunyikan konten */
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.5s ease-out, opacity 0.3s ease;
+}
+
+/* Hover effect agar user tahu ini bisa diklik */
+.section-header:hover {
+    opacity: 0.7;
+}
+
+/* --- STATE KETIKA TERBUKA (ACTIVE) --- */
+
+/* Panah berputar */
+.collapsible.active .arrow-icon {
+    transform: rotate(180deg);
+    color: var(--text-main);
+}
+
+/* Konten muncul dengan animasi slide down */
+.collapsible.active .section-content {
+    max-height: 5000px; /* Nilai besar agar konten panjang tertampung */
+    opacity: 1;
+    margin-top: 20px;
+    padding-bottom: 15px;
+}
+
+/* Efek border tambahan saat aktif */
+.collapsible.active {
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
